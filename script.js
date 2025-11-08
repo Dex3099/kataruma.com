@@ -159,9 +159,8 @@ function initializeTypingEffect() {
     if (!typingText) return;
     
     const texts = [
-        'made by @fishy',
-        'deepseek mastermind',
-        'skidiot'
+        'haiiiii',
+        'join my discord server'
     ];
     
     let textIndex = 0;
@@ -509,4 +508,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCursor();
     initializeEntryPage();
     initializeSocialLinks();
+
 });
