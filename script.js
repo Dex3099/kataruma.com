@@ -159,8 +159,9 @@ function initializeTypingEffect() {
     if (!typingText) return;
     
     const texts = [
-        'haiiiii',
-        'join my discord server'
+        'sup',
+        'I have a minecraft server!',
+        'Join my discord server now!!!'
     ];
     
     let textIndex = 0;
@@ -510,4 +511,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSocialLinks();
 
 });
+
 
