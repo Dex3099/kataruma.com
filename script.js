@@ -165,9 +165,13 @@ function initializeTypingEffect() {
     if (!typingText) return;
     
     const texts = [
-        'sup',
-        ':P',
-        'hiya'
+        'Hey guys',
+        'Im tdl',
+        'New load for CS:GO',
+        'Cool',
+        'Haahaah money',
+        'Dj ess',
+        'Logged in as krestofar'
     ];
     
     let textIndex = 0;
