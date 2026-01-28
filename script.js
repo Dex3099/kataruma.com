@@ -16,6 +16,10 @@ let backgroundMusic = null;
 let hasEnteredSite = false;
 let isMuted = false;
 let currentSpotifyData = null;
+let snowStarted = false;
+let snowCanvas = null;
+let snowCtx = null;
+let snowAnimationId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeCursor();
@@ -78,7 +82,9 @@ function initializeEntryPage() {
     entryButton.addEventListener('click', function() {
         if (hasEnteredSite) return;
         hasEnteredSite = true;
-        
+        // start a gentle snow effect when entering
+        startSnow();
+
         audioControl.classList.add('visible');
         
         if (backgroundMusic && !isMuted) {
@@ -511,6 +517,81 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSocialLinks();
 
 });
+
+function startSnow() {
+    if (snowStarted) return;
+    snowStarted = true;
+
+    snowCanvas = document.createElement('canvas');
+    snowCanvas.className = 'snow-canvas';
+    snowCanvas.style.position = 'fixed';
+    snowCanvas.style.top = 0;
+    snowCanvas.style.left = 0;
+    snowCanvas.style.width = '100%';
+    snowCanvas.style.height = '100%';
+    snowCanvas.style.pointerEvents = 'none';
+    snowCanvas.style.zIndex = 5000;
+    document.body.appendChild(snowCanvas);
+
+    snowCtx = snowCanvas.getContext('2d');
+
+    function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        snowCanvas.width = Math.round(window.innerWidth * dpr);
+        snowCanvas.height = Math.round(window.innerHeight * dpr);
+        snowCanvas.style.width = window.innerWidth + 'px';
+        snowCanvas.style.height = window.innerHeight + 'px';
+        snowCtx.scale(dpr, dpr);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const flakes = [];
+    const FLake_COUNT = 60; // less dense
+
+    for (let i = 0; i < FLake_COUNT; i++) {
+        flakes.push(createFlake(true));
+    }
+
+    function createFlake(initial = false) {
+        return {
+            x: Math.random() * window.innerWidth,
+            y: initial ? Math.random() * window.innerHeight : -Math.random() * 100,
+            r: 0.8 + Math.random() * 2.2, // small flakes
+            vx: (Math.random() - 0.5) * 0.4, // gentle horizontal drift
+            vy: 0.3 + Math.random() * 0.9, // slow fall
+            opacity: 0.4 + Math.random() * 0.6,
+            step: Math.random() * Math.PI * 2,
+            stepSize: 0.01 + Math.random() * 0.03
+        };
+    }
+
+    function update() {
+        snowCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        for (let i = 0; i < flakes.length; i++) {
+            const f = flakes[i];
+            f.step += f.stepSize;
+            f.x += Math.sin(f.step) * 0.4 + f.vx;
+            f.y += f.vy;
+
+            if (f.y > window.innerHeight + 10 || f.x < -50 || f.x > window.innerWidth + 50) {
+                flakes[i] = createFlake(false);
+                continue;
+            }
+
+            snowCtx.beginPath();
+            snowCtx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+            snowCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+            snowCtx.fill();
+        }
+
+        snowAnimationId = requestAnimationFrame(update);
+    }
+
+    update();
+}
 
 
 
